@@ -1,10 +1,7 @@
-from typing import Optional
 from datetime import datetime
+from typing import Optional
 
-from pydantic import (
-    BaseModel, Extra,
-    PositiveInt, NonNegativeInt
-)
+from pydantic import BaseModel, Extra, NonNegativeInt, PositiveInt
 
 
 class DonationBase(BaseModel):

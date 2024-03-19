@@ -1,5 +1,6 @@
 from datetime import datetime
-from sqlalchemy import Column, Integer, Boolean, DateTime
+
+from sqlalchemy import Boolean, Column, DateTime, Integer
 
 
 class InvestModelBase:

@@ -1,24 +1,16 @@
-from typing import Optional
 from datetime import datetime
+from typing import Optional
 
-from pydantic import (
-    BaseModel, Extra,
-    Field, validator,
-    PositiveInt, NonNegativeInt
-)
+from pydantic import (BaseModel, Extra, Field, NonNegativeInt, PositiveInt,
+                      validator)
 
+from app.core.constants import NAME_MAX_LENGHT, NAME_MIN_LENHGT
 from app.error_message import ErrorMessage
-from app.core.constants import (
-    NAME_MAX_LENGHT,
-    NAME_MIN_LENHGT
-)
 
 
 class CharityProjectBase(BaseModel):
     name: Optional[str] = Field(
-        None,
-        max_length=NAME_MAX_LENGHT,
-        min_length=NAME_MIN_LENHGT
+        None, max_length=NAME_MAX_LENGHT, min_length=NAME_MIN_LENHGT
     )
     description: Optional[str]
     full_amount: Optional[PositiveInt]
@@ -30,25 +22,21 @@ class CharityProjectBase(BaseModel):
 class CharityProjectUpdate(CharityProjectBase):
     pass
 
-    @validator('name')
+    @validator("name")
     def name_cant_be_empty(cls, value: str):
-        if value is None or value == '':
+        if value is None or value == "":
             raise ValueError(ErrorMessage.NO_NAME)
         return value
 
-    @validator('description')
+    @validator("description")
     def description_cant_be_empty(cls, value: str):
-        if value is None or value == '':
+        if value is None or value == "":
             raise ValueError(ErrorMessage.NO_DESCRIPTION)
         return value
 
 
 class CharityProjectCreate(CharityProjectUpdate):
-    name: str = Field(
-        ...,
-        max_length=NAME_MAX_LENGHT,
-        min_length=NAME_MIN_LENHGT
-    )
+    name: str = Field(..., max_length=NAME_MAX_LENGHT, min_length=NAME_MIN_LENHGT)
     description: str
     full_amount: PositiveInt
 

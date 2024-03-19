@@ -1,5 +1,5 @@
-from typing import Union, Type
 from datetime import datetime
+from typing import Type, Union
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,9 +8,9 @@ from app.models import CharityProject, Donation
 
 
 async def investing(
-        obj: Union[Donation, CharityProject],
-        model: Type[Union[Donation, CharityProject]],
-        session: AsyncSession
+    obj: Union[Donation, CharityProject],
+    model: Type[Union[Donation, CharityProject]],
+    session: AsyncSession,
 ):
     available_items = await get_available_items(model, session)
     if available_items is None:
@@ -37,23 +37,18 @@ async def investing(
 
 
 async def get_available_items(
-        model: Type[Union[Donation, CharityProject]],
-        session: AsyncSession
+    model: Type[Union[Donation, CharityProject]], session: AsyncSession
 ) -> list[Union[Donation, CharityProject]]:
     available_items = await session.execute(
-        select(model).where(
-            model.fully_invested.is_(False)
-        ).order_by(
-            model.create_date
-        )
+        select(model).where(model.fully_invested.is_(False)).order_by(model.create_date)
     )
     return available_items.scalars().all()
 
 
 def crediting_funds(
-        obj: Union[Donation, CharityProject],
-        item: Union[CharityProject, Donation],
-        donation: int
+    obj: Union[Donation, CharityProject],
+    item: Union[CharityProject, Donation],
+    donation: int,
 ) -> None:
     item.invested_amount += donation
     obj.invested_amount += donation

@@ -1,29 +1,23 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.validators import (check_close_project, check_full_amount_update,
+                                check_invested_amount_delete,
+                                check_name_duplicate, check_project_exists)
 from app.core.db import get_async_session
 from app.core.user import current_superuser
 from app.crud.charity_project import charity_project_crud
-from app.schemas.charity_project import (
-    CharityProjectDB,
-    CharityProjectCreate,
-    CharityProjectUpdate
-)
-from app.api.validators import (
-    check_name_duplicate,
-    check_project_exists,
-    check_invested_amount_delete,
-    check_full_amount_update,
-    check_close_project
-)
 from app.investing import investing
 from app.models import Donation
+from app.schemas.charity_project import (CharityProjectCreate,
+                                         CharityProjectDB,
+                                         CharityProjectUpdate)
 
 router = APIRouter()
 
 
 @router.get(
-    '/',
+    "/",
     response_model=list[CharityProjectDB],
     response_model_exclude_none=True,
 )
@@ -34,7 +28,7 @@ async def get_all_projects(
 
 
 @router.post(
-    '/',
+    "/",
     response_model=CharityProjectDB,
     response_model_exclude_none=True,
     dependencies=[Depends(current_superuser)],
@@ -49,13 +43,13 @@ async def create_project(
 
 
 @router.delete(
-    '/{project_id}',
+    "/{project_id}",
     response_model=CharityProjectDB,
     dependencies=[Depends(current_superuser)],
 )
 async def remove_project(
-        project_id: int,
-        session: AsyncSession = Depends(get_async_session),
+    project_id: int,
+    session: AsyncSession = Depends(get_async_session),
 ):
     project = await check_project_exists(project_id, session)
     await check_invested_amount_delete(project)
@@ -64,18 +58,16 @@ async def remove_project(
 
 
 @router.patch(
-    '/{project_id}',
+    "/{project_id}",
     response_model=CharityProjectDB,
     dependencies=[Depends(current_superuser)],
 )
 async def partially_update_project(
-        project_id: int,
-        obj_in: CharityProjectUpdate,
-        session: AsyncSession = Depends(get_async_session),
+    project_id: int,
+    obj_in: CharityProjectUpdate,
+    session: AsyncSession = Depends(get_async_session),
 ):
-    project = await check_project_exists(
-        project_id, session
-    )
+    project = await check_project_exists(project_id, session)
     await check_close_project(project)
     if obj_in.name is not None:
         await check_name_duplicate(obj_in.name, session)

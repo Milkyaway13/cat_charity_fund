@@ -7,11 +7,7 @@ from app.models import Donation, User
 
 class CRUDDonation(CRUDBase):
 
-    async def get_donations_by_user(
-            self,
-            user: User,
-            session: AsyncSession
-    ):
+    async def get_donations_by_user(self, user: User, session: AsyncSession):
         donations = await session.execute(
             select(Donation).where(Donation.user_id == user.id)
         )
