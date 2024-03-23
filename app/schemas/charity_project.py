@@ -1,8 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import (BaseModel, Extra, Field, NonNegativeInt, PositiveInt,
-                      validator)
+from pydantic import BaseModel, Extra, Field, NonNegativeInt, PositiveInt, validator
 
 from app.core.constants import NAME_MAX_LENGHT, NAME_MIN_LENHGT
 from app.error_message import ErrorMessage
